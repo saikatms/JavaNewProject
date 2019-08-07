@@ -120,7 +120,7 @@ public class SIPTOCSVSubColSubRowWithFilterAndItemSelector {
 								for (Map.Entry mapElement : dataMap.entrySet()) {
 									String key = (String) mapElement.getKey();
 									ArrayList value = (ArrayList) mapElement.getValue();
-									if (key.contains(filterfield) && value.contains(filtervalue)) {
+									if (key.contains(filterfield) && value.toString().matches(".*"+filtervalue+".*")) {
 										setrowSet(dataMap);
 									}
 								}
