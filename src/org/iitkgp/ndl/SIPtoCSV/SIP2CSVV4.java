@@ -55,7 +55,6 @@ public class SIP2CSVV4 {
 	public static String p = "";
 
 	public SIP2CSVV4(String sourcePath, String destPath, int threshold) throws Exception {
-
 		System.out.println("Program started ...");
 		long startTime=System.nanoTime();
 		File source = new File(sourcePath);
@@ -65,10 +64,8 @@ public class SIP2CSVV4 {
 			traverse(source);
 		}
 		System.out.println("CSV file saved in :" + outputPath + "folder");
-//		long end = System.currentTimeMillis();
 		long endTime = System.nanoTime();
-		System.out.println("Finished in :"+((endTime-startTime)/1000000000)/60+" Minute");
-
+		System.out.println("Finished in : "+((endTime-startTime)/1000000000)/60+" Minute");
 	}
 
 	void traverse(File parent) throws IOException {
@@ -77,7 +74,6 @@ public class SIP2CSVV4 {
 		reader.init();
 		CompressedDataItem item;
 		try {
-			//
 			while ((item = reader.next()) != null) {
 				String s1 = new String(item.getEntryName());
 				String parentString = s1.substring(0, s1.lastIndexOf("/"));
@@ -94,7 +90,6 @@ public class SIP2CSVV4 {
 
 					if (!dataMap.isEmpty()) {
 						setrowSet(dataMap);
-//						System.out.println("data map------> "+dataMap);
 					}
 					dataMap.clear();
 				}
@@ -180,9 +175,6 @@ public class SIP2CSVV4 {
 				data += eachValue + "|";
 
 			data = data.replaceAll("\\|$", "");// replace the last "|"
-//			data = data.replaceAll("\\|\\s$", "");
-//			data = data.trim();
-
 			row[columnindex] = data;
 		}
 		row[0] = valueMap.get("handleId").get(0);
@@ -212,7 +204,6 @@ public class SIP2CSVV4 {
 					ArrayList attrlist = listAllAttributes(eElement);
 					int listSize = attrlist.size();
 					String columnname = "";
-
 					for (int k = 0; k < listSize; k++) {
 						if (k == (listSize - 1)) {
 							columnname = columnname + attrlist.get(k);
@@ -224,7 +215,6 @@ public class SIP2CSVV4 {
 					if (!nodeindexmap.containsKey(columnname)) {
 						nodeindexmap.put(columnname, counter++);
 					}
-
 					String textContent = eElement.getTextContent();
 					if (dataMap.containsKey(columnname))
 						dataMap.get(columnname).add(textContent);
@@ -246,7 +236,6 @@ public class SIP2CSVV4 {
 
 		// get a map containing the attributes of this node
 		NamedNodeMap attributes = element.getAttributes();
-
 		// get the number of nodes in this map
 		int numAttrs = attributes.getLength();
 		ArrayList<String> attributeslist = new ArrayList<String>();

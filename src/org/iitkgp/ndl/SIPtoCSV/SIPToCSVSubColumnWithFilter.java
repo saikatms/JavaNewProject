@@ -65,9 +65,10 @@ public class SIPToCSVSubColumnWithFilter {
 		filterfield = filterField;
 		filtertype = filterType;
 		filtervalue = filterValue;
+		System.out.println(columnOrHandlePath);
 		if (!(columnPath.contains("column") || handlePath.contains("handle"))) {
 			throw new Exception(
-					"Please Rename Input Folder... For Column list input must include 'column' in it name and for Handle list input please include 'handle' in it.");
+					"Please Rename Input filename... For Column list input must include 'column' in it name and for Handle list input please include 'handle' in it.");
 		}
 		if (handlePath.contains("handle")) {
 			CSVReader handleCsvReader = new CSVReader(new FileReader(handlePath));
@@ -76,8 +77,8 @@ public class SIPToCSVSubColumnWithFilter {
 			}
 			handleCsvReader.close();
 		}
-
 		if (columnPath.contains("column")) {
+			
 			CSVReader headerCsvReader = new CSVReader(new FileReader(columnOrHandlePath));
 			for (String[] row : headerCsvReader.readAll()) {
 				headerList.add(row[0]);
@@ -91,7 +92,6 @@ public class SIPToCSVSubColumnWithFilter {
 	}
 
 	void traverse(File sourceFile) throws IOException {
-
 		// TODO Auto-generated method stub
 		TarGZCompressedFileReader reader = new TarGZCompressedFileReader(sourceFile);
 		reader.init();
@@ -117,9 +117,14 @@ public class SIPToCSVSubColumnWithFilter {
 							if (!dataMap.isEmpty()) {
 								for (Map.Entry mapElement : dataMap.entrySet()) {
 									String key = (String) mapElement.getKey();
-									ArrayList value = (ArrayList) mapElement.getValue();
-									if (key.contains(filterfield) && value.toString().matches(".*"+filtervalue+".*")) {
-										setrowSet(dataMap);
+									ArrayList<String> value = (ArrayList) mapElement.getValue();
+									if (key.equalsIgnoreCase(filterfield)) {
+										for (String eachValue : value) {
+											if (eachValue.equalsIgnoreCase(filtervalue)) {
+												setrowSet(dataMap);
+												break;
+											}
+										}
 									}
 								}
 							}
@@ -136,14 +141,18 @@ public class SIPToCSVSubColumnWithFilter {
 							});
 						}
 					}
-
 					// Adding last datamap in setrowset
 					if (!dataMap.isEmpty()) {
 						for (Map.Entry mapElement : dataMap.entrySet()) {
 							String key = (String) mapElement.getKey();
-							ArrayList value = (ArrayList) mapElement.getValue();
-							if (key.contains(filterfield) && value.toString().matches(".*"+filtervalue+".*")) {
-								setrowSet(dataMap);
+							ArrayList<String> value = (ArrayList) mapElement.getValue();
+							if (key.equalsIgnoreCase(filterfield)) {
+								for (String eachValue : value) {
+									if (eachValue.equalsIgnoreCase(filtervalue)) {
+										setrowSet(dataMap);
+										break;
+									}
+								}
 							}
 						}
 					}
@@ -205,9 +214,14 @@ public class SIPToCSVSubColumnWithFilter {
 							if (!dataMap.isEmpty() && handleIDList.contains(dataMap.get("handleId").get(0))) {
 								for (Map.Entry mapElement : dataMap.entrySet()) {
 									String key = (String) mapElement.getKey();
-									ArrayList value = (ArrayList) mapElement.getValue();
-									if (key.contains(filterfield) && value.contains(filtervalue)) {
-										setrowSet(dataMap);
+									ArrayList<String> value = (ArrayList) mapElement.getValue();
+									if (key.equalsIgnoreCase(filterfield)) {
+										for (String eachValue : value) {
+											if (eachValue.equalsIgnoreCase(filtervalue)) {
+												setrowSet(dataMap);
+												break;
+											}
+										}
 									}
 								}
 							}
@@ -229,6 +243,12 @@ public class SIPToCSVSubColumnWithFilter {
 					rowsetiterator2(rowSet);
 				}
 			} else if (isContain(filtertype, "valuelist")) {
+				filtervalue = filtervalue.replaceAll("^\"|\"$", "");
+				ArrayList<String> arr_filterValue = new ArrayList<String>();
+				String[] arr_str = filtervalue.split("\",\"");
+				for (String arr_val : arr_str) {
+					arr_filterValue.add(arr_val);
+				}
 				if (!headerList.isEmpty() && handleIDList.isEmpty()) {
 					System.out.println("Choose Column Operation Started... Please Wait");
 					// Iteration of tar.gz file operation done here
@@ -247,12 +267,15 @@ public class SIPToCSVSubColumnWithFilter {
 							if (!dataMap.isEmpty()) {
 								for (Map.Entry mapElement : dataMap.entrySet()) {
 									String key = (String) mapElement.getKey();
-									ArrayList value = (ArrayList) mapElement.getValue();
-//								System.out.println("value :"+value);
-									String[] filtervalueArr = filtervalue.split(",");
-									for (String filterVal : filtervalueArr) {
-										if (key.contains(filterfield) && value.contains(filterVal)) {
-											setrowSet(dataMap);
+									ArrayList<String> value = (ArrayList) mapElement.getValue();
+									if (key.equalsIgnoreCase(filterfield)) {
+										for (String field_value : value) {
+											for (String arr_val : arr_filterValue) {
+												if (arr_val.equalsIgnoreCase(field_value)) {
+													setrowSet(dataMap);
+													break;
+												}
+											}
 										}
 									}
 								}
@@ -275,12 +298,15 @@ public class SIPToCSVSubColumnWithFilter {
 					if (!dataMap.isEmpty()) {
 						for (Map.Entry mapElement : dataMap.entrySet()) {
 							String key = (String) mapElement.getKey();
-							ArrayList value = (ArrayList) mapElement.getValue();
-//						System.out.println("value :"+value);
-							String[] filtervalueArr = filtervalue.split(",");
-							for (String filterVal : filtervalueArr) {
-								if (key.contains(filterfield) && value.contains(filterVal)) {
-									setrowSet(dataMap);
+							ArrayList<String> value = (ArrayList) mapElement.getValue();
+							if (key.equalsIgnoreCase(filterfield)) {
+								for (String field_value : value) {
+									for (String arr_val : arr_filterValue) {
+										if (arr_val.equalsIgnoreCase(field_value)) {
+											setrowSet(dataMap);
+											break;
+										}
+									}
 								}
 							}
 						}
@@ -342,12 +368,15 @@ public class SIPToCSVSubColumnWithFilter {
 							if (!dataMap.isEmpty() && handleIDList.contains(dataMap.get("handleId").get(0))) {
 								for (Map.Entry mapElement : dataMap.entrySet()) {
 									String key = (String) mapElement.getKey();
-									ArrayList value = (ArrayList) mapElement.getValue();
-//								System.out.println("value :"+value);
-									String[] filtervalueArr = filtervalue.split(",");
-									for (String filterVal : filtervalueArr) {
-										if (key.contains(filterfield) && value.contains(filterVal)) {
-											setrowSet(dataMap);
+									ArrayList<String> value = (ArrayList) mapElement.getValue();
+									if (key.equalsIgnoreCase(filterfield)) {
+										for (String field_value : value) {
+											for (String arr_val : arr_filterValue) {											
+												if (arr_val.equalsIgnoreCase(field_value)) {
+													setrowSet(dataMap);
+													break;
+												}
+											}
 										}
 									}
 								}
@@ -369,15 +398,11 @@ public class SIPToCSVSubColumnWithFilter {
 					}
 					rowsetiterator2(rowSet);
 				}
-
 			}
-
 			// column list for given handleid
-//				if (!headerList.isEmpty() && !handleIDList.isEmpty()) {}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
 	}
 
 	private void rowsetiterator2(Set<String[]> rowSet) {
@@ -505,10 +530,6 @@ public class SIPToCSVSubColumnWithFilter {
 				data += eachValue + "|";
 			}
 			data = data.replaceAll("\\|$", ""); // replace the last "|"
-
-//				data = data.replaceAll("\\|\\s$", "");
-//				data = data.trim();
-
 			row[columnindex] = data;
 		}
 		row[0] = valueMap.get("handleId").get(0);
@@ -562,7 +583,6 @@ public class SIPToCSVSubColumnWithFilter {
 					}
 				}
 			}
-
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

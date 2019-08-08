@@ -66,7 +66,7 @@ public class SIP2CSVChooseColumn_v2 {
 		headerCSV.close();
 		traverse(sourceFile);
 		long endTime = System.nanoTime();
-		System.out.println("Finished in :"+((endTime-startTime)/1000000000)/60+" Minute");
+		System.out.println("Finished in : "+((endTime-startTime)/1000000000)/60+" Minute");
 	}
 
 	void traverse(File sourceFile) throws IOException {
@@ -91,7 +91,6 @@ public class SIP2CSVChooseColumn_v2 {
 					dataMap.clear();
 					count++;
 				}
-
 				if (item.getEntryName().endsWith("handle")) {
 					String handleID = new String(item.getContents());
 
@@ -146,11 +145,8 @@ public class SIP2CSVChooseColumn_v2 {
 				if (emptyCheck != true) {
 					subrowSet2.add(subRow);
 				}
-
 			}
-
 			rowsetiterator(subrowSet2);
-
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -159,8 +155,6 @@ public class SIP2CSVChooseColumn_v2 {
 	private void rowsetiterator(Set<String[]> subrowSet2) {
 		// TODO Auto-generated method stub
 		int x = 1;
-		System.out.println(threShold);
-
 		if (subrowSet2.size() % threShold == 0) {
 			for (String[] strings : subrowSet2) {
 				subrowSet3.add(strings);
@@ -187,7 +181,7 @@ public class SIP2CSVChooseColumn_v2 {
 		// TODO Auto-generated method stub
 		String Path = outputPath;
 		String csvName = Path + count + ".csv";
-		System.out.println("out put path :" + csvName);
+		System.out.println("Out put path : " + csvName);
 
 		File csvFile = new File(csvName);
 		String[] header = new String[nodeindexmap.size()];
@@ -199,7 +193,6 @@ public class SIP2CSVChooseColumn_v2 {
 						CSVFormat.DEFAULT.withHeader(headerList.toArray(new String[0])));
 				for (String[] myonerow : subrowSet3) {
 					csvPrinter.printRecord(Arrays.asList(myonerow));
-
 				}
 				csvPrinter.close();
 				subrowSet3.clear();
@@ -211,7 +204,6 @@ public class SIP2CSVChooseColumn_v2 {
 				csvPrinter.close();
 				rowset.clear();
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -225,7 +217,6 @@ public class SIP2CSVChooseColumn_v2 {
 			DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
 			Document dcf = documentBuilder.parse(new InputSource(new java.io.StringReader(fileContentString)));
 			dcf.getDocumentElement();
-
 			// Paese attributes of root nodes
 			Element rootElement = dcf.getDocumentElement();
 			ArrayList rootElementList = listallAttributes(rootElement);
@@ -240,7 +231,6 @@ public class SIP2CSVChooseColumn_v2 {
 					ArrayList attrlist = listallAttributes(eElement);
 					int listSize = attrlist.size();
 					String columnname = "";
-
 					for (int k = 0; k < listSize; k++) {
 						if (k == (listSize - 1)) {
 							columnname = columnname + attrlist.get(k);
@@ -252,7 +242,6 @@ public class SIP2CSVChooseColumn_v2 {
 					if (!nodeindexmap.containsKey(columnname)) {
 						nodeindexmap.put(columnname, counter++);
 					}
-
 					String textContent = eElement.getTextContent();
 					if (dataMap.containsKey(columnname))
 						dataMap.get(columnname).add(textContent);
@@ -271,13 +260,11 @@ public class SIP2CSVChooseColumn_v2 {
 	}
 
 	ArrayList listallAttributes(Element rootElement) {
-
 		// get a map containing the attributes of this node
 		NamedNodeMap attributes = rootElement.getAttributes();
 		// get the number of nodes in this map
 		int numAttrs = attributes.getLength();
 		ArrayList<String> attributeslist = new ArrayList<String>();
-
 		for (int i = 0; i < numAttrs; i++) {
 			Attr attr = (Attr) attributes.item(i);
 			String attrName = attr.getNodeName();
@@ -301,8 +288,7 @@ public class SIP2CSVChooseColumn_v2 {
 				data += eachValue + "|";
 //			data = data.replaceAll("\\|\\s$", ""); // replace the last "|"
 			data = data.replaceAll("\\|$", "");// replace the last "|"
-			data = data.trim();
-			
+			data = data.trim();			
 			row[columnindex] = data;
 		}
 		row[0] = valueMap.get("handleId").get(0);

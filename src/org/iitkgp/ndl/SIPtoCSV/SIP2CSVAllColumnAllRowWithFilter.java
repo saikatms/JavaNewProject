@@ -55,14 +55,13 @@ public class SIP2CSVAllColumnAllRowWithFilter {
 		filterfield = filterField;
 		filtertype = filterType;
 		filtervalue = filterValue;
-
 		if (source.exists()) {
 			traverse(source);
 		}
 		System.out.println("CSV file saved in :" + outputPath + "folder");
 //		long end = System.currentTimeMillis();
 		long endTime = System.nanoTime();
-		System.out.println("Finished in :" + ((endTime - startTime) / 1000000000) / 60 + " Minute");
+		System.out.println("Finished in : " + ((endTime - startTime) / 1000000000) / 60 + " Minute");
 
 	}
 
@@ -88,69 +87,20 @@ public class SIP2CSVAllColumnAllRowWithFilter {
 						String fileContents = new String(item.getContents());
 						// parsing filecontent of XML file
 						parseDublin(fileContents);
-
 					}
 					if (!p.equals(parentString)) {
 						p = parentString;
 						System.out.println("Accessing File : " + count++ + " : " + parentString);
-
 						if (!dataMap.isEmpty()) {
 							for (Map.Entry mapElement : dataMap.entrySet()) {
 								String key = (String) mapElement.getKey();
-								ArrayList value = (ArrayList) mapElement.getValue();
-//								System.out.println("array list :"+value);
-								if (key.contains(filterfield) && value.toString().matches(".*"+filtervalue+".*")) {
-									setrowSet(dataMap);
-								}
-							}
-						}
-						dataMap.clear();
-					}
-					if (item.getEntryName().endsWith("handle")) {
-						String HandleID = new String(item.getContents());
-						// adding Handle ID in the ArrayList
-						dataMap.put("handleId", new ArrayList<>() {
-							{
-								add(HandleID);
-							}
-						});
-					}
-				}
-
-				if (!dataMap.isEmpty()) {
-					for (Map.Entry mapElement : dataMap.entrySet()) {
-						String key = (String) mapElement.getKey();
-						ArrayList value = (ArrayList) mapElement.getValue();
-						if (key.contains(filterfield) && value.toString().matches(".*"+filtervalue+".*")) {
-							setrowSet(dataMap);
-						}
-					}
-				}
-				rowsetiterator(rowset);
-
-			} else if (isContain(filtertype, "valuelist")) {
-				while ((item = reader.next()) != null) {
-					String s1 = new String(item.getEntryName());
-					String parentString = s1.substring(0, s1.lastIndexOf("/"));
-
-					if (item.getEntryName().endsWith(".xml")) {
-						String fileContents = new String(item.getContents());
-						// parsing filecontent of XML file
-						parseDublin(fileContents);
-
-					}
-					if (!p.equals(parentString)) {
-						p = parentString;
-						System.out.println("Accessing File : " + count++ + " : " + parentString);
-
-						if (!dataMap.isEmpty()) {
-							for (Map.Entry mapElement : dataMap.entrySet()) {
-								String key = (String) mapElement.getKey();
-								ArrayList value = (ArrayList) mapElement.getValue();
-								String[] filtervalueArr = filtervalue.split(",");
-								for (String filterVal : filtervalueArr) {
-									if (key.contains(filterfield) && value.contains(filterVal)) {
-										setrowSet(dataMap);
+								ArrayList<String> value = (ArrayList) mapElement.getValue();
+								if (key.equalsIgnoreCase(filterfield)) {
+									for (String eachValue : value) {
+										if (eachValue.equalsIgnoreCase(filtervalue)) {
+											setrowSet(dataMap);
+											break;
+										}
 									}
 								}
 							}
@@ -169,14 +119,84 @@ public class SIP2CSVAllColumnAllRowWithFilter {
 				}
 
 				if (!dataMap.isEmpty()) {
-
 					for (Map.Entry mapElement : dataMap.entrySet()) {
 						String key = (String) mapElement.getKey();
-						ArrayList value = (ArrayList) mapElement.getValue();
-						String[] filtervalueArr = filtervalue.split(",");
-						for (String filterVal : filtervalueArr) {
-							if (key.contains(filterfield) && value.contains(filterVal)) {
-								setrowSet(dataMap);
+						ArrayList<String> value = (ArrayList) mapElement.getValue();
+						if (key.equalsIgnoreCase(filterfield)) {
+							for (String eachValue : value) {
+								if (eachValue.equalsIgnoreCase(filtervalue)) {
+									setrowSet(dataMap);
+									break;
+								}
+							}
+						}
+					}
+				}
+				rowsetiterator(rowset);
+
+			} else if (isContain(filtertype, "valuelist")) {
+
+				filtervalue = filtervalue.replaceAll("^\"|\"$", "");
+				ArrayList<String> arr_filterValue = new ArrayList<String>();
+				String[] arr_str = filtervalue.split("\",\"");
+				for (String arr_val : arr_str) {
+					arr_filterValue.add(arr_val);
+				}
+				while ((item = reader.next()) != null) {
+					String s1 = new String(item.getEntryName());
+					String parentString = s1.substring(0, s1.lastIndexOf("/"));
+
+					if (item.getEntryName().endsWith(".xml")) {
+						String fileContents = new String(item.getContents());
+						// parsing filecontent of XML file
+						parseDublin(fileContents);
+					}
+					if (!p.equals(parentString)) {
+						p = parentString;
+						System.out.println("Accessing File : " + count++ + " : " + parentString);
+
+						if (!dataMap.isEmpty()) {
+							for (Map.Entry mapElement : dataMap.entrySet()) {
+								String key = (String) mapElement.getKey();
+								ArrayList<String> value = (ArrayList) mapElement.getValue();
+								if (key.equalsIgnoreCase(filterfield)) {
+									for (String field_value : value) {
+										for (String arr_val : arr_filterValue) {
+											if (arr_val.equalsIgnoreCase(field_value)) {
+												setrowSet(dataMap);
+												break;
+											}
+										}
+									}
+
+								}
+							}
+						}
+						dataMap.clear();
+					}
+					if (item.getEntryName().endsWith("handle")) {
+						String HandleID = new String(item.getContents());
+						// adding Handle ID in the ArrayList
+						dataMap.put("handleId", new ArrayList<>() {
+							{
+								add(HandleID);
+							}
+						});
+					}
+				}
+
+				if (!dataMap.isEmpty()) {
+					for (Map.Entry mapElement : dataMap.entrySet()) {
+						String key = (String) mapElement.getKey();
+						ArrayList<String> value = (ArrayList) mapElement.getValue();
+						if (key.equalsIgnoreCase(filterfield)) {
+							for (String field_value : value) {
+								for (String arr_val : arr_filterValue) {
+									if (arr_val.equalsIgnoreCase(field_value)) {
+										setrowSet(dataMap);
+										break;
+									}
+								}
 							}
 						}
 					}
@@ -249,9 +269,6 @@ public class SIP2CSVAllColumnAllRowWithFilter {
 				data += eachValue + "|";
 
 			data = data.replaceAll("\\|$", "");// replace the last "|"
-//				data = data.replaceAll("\\|\\s$", "");
-//				data = data.trim();
-
 			row[columnindex] = data;
 		}
 		row[0] = valueMap.get("handleId").get(0);

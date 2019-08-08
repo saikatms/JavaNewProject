@@ -112,7 +112,6 @@ public class SIP2CSVWithHandleID_v2 {
 			}
 			handleCsvReader.close();
 		}
-
 		if (columnPath.contains("column")) {
 			CSVReader headerCsvReader = new CSVReader(new FileReader(columnOrHandlePath));
 			for (String[] row : headerCsvReader.readAll()) {
@@ -221,11 +220,9 @@ public class SIP2CSVWithHandleID_v2 {
 				while ((item = reader.next()) != null) {
 					String s1 = new String(item.getEntryName());
 					String parentString = s1.substring(0, s1.lastIndexOf("/"));
-
 					if (!p.equals(parentString)) {
 						p = parentString;
 						System.out.println("Accenssing Item : " + item_count++ + " : " + parentString);
-
 						if (!dataMap.isEmpty() && handleIDList.contains(dataMap.get("handleId").get(0))) {
 							setrowSet(dataMap);
 							count++;
@@ -326,7 +323,6 @@ public class SIP2CSVWithHandleID_v2 {
 	// Threshold operation
 	private void rowsetiterator2(Set<String[]> rowSet) {
 		// TODO Auto-generated method stub
-
 		int x = 1;
 		if (rowSet.size() % thresold == 0) {
 			for (String[] strings : rowSet) {
@@ -523,10 +519,6 @@ public class SIP2CSVWithHandleID_v2 {
 				data += eachValue + "|";
 			}
 			data = data.replaceAll("\\|$", ""); // replace the last "|"
-
-//			data = data.replaceAll("\\|\\s$", "");
-//			data = data.trim();
-
 			row[columnindex] = data;
 		}
 		row[0] = valueMap.get("handleId").get(0);

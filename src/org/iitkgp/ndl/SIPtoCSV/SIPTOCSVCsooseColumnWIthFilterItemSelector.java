@@ -102,9 +102,14 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 						if (!dataMap.isEmpty()) {
 							for (Map.Entry mapElement : dataMap.entrySet()) {
 								String key = (String) mapElement.getKey();
-								ArrayList value = (ArrayList) mapElement.getValue();
-								if (key.contains(filterfield) && value.toString().matches(".*"+filtervalue+".*")) {
-									setrowSet(dataMap);
+								ArrayList<String> value = (ArrayList) mapElement.getValue();
+								if (key.equalsIgnoreCase(filterfield)) {
+									for (String eachValue : value) {
+										if (eachValue.equalsIgnoreCase(filtervalue)) {
+											setrowSet(dataMap);
+											break;
+										}
+									}
 								}
 							}
 						}
@@ -171,6 +176,12 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 				rowsetiterator(subrowSet2);
 
 			} else if (isContain(filtertype, "valuelist")) {
+				filtervalue = filtervalue.replaceAll("^\"|\"$", "");
+				ArrayList<String> arr_filterValue = new ArrayList<String>();
+				String[] arr_str=filtervalue.split("\",\"");
+				for (String arr_val : arr_str) {
+					arr_filterValue.add(arr_val);
+				}
 
 				while ((item = reader.next()) != null) {
 					String filenameString = new String(item.getEntryName());
@@ -186,13 +197,17 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 						if (!dataMap.isEmpty()) {
 							for (Map.Entry mapElement : dataMap.entrySet()) {
 								String key = (String) mapElement.getKey();
-								ArrayList value = (ArrayList) mapElement.getValue();
-//							System.out.println("value :"+value);
-								String[] filtervalueArr = filtervalue.split(",");
-								for (String filterVal : filtervalueArr) {
-									if (key.contains(filterfield) && value.contains(filterVal)) {
-										setrowSet(dataMap);
+								ArrayList<String> value = (ArrayList) mapElement.getValue();
+								if (key.equalsIgnoreCase(filterfield)) {
+									for (String field_value : value) {
+										for (String arr_val : arr_filterValue) {											
+											if (arr_val.equalsIgnoreCase(field_value)) {
+												setrowSet(dataMap);
+												break;
+											}
+										}
 									}
+
 								}
 							}
 						}

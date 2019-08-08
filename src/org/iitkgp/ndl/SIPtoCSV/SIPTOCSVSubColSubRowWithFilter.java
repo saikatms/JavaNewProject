@@ -52,14 +52,15 @@ public class SIPTOCSVSubColSubRowWithFilter {
 	private static int high = thresold;
 	public static String p = "";
 	int rowcount;
-	public SIPTOCSVSubColSubRowWithFilter(String handleListPath, String sourcePath, String columnListPath,
-			String destPath, Integer thresholdvalue, String filterField, String filterType, String filterValue) throws Exception {
-		// TODO Auto-generated constructor stub
 
+	public SIPTOCSVSubColSubRowWithFilter(String handleListPath, String sourcePath, String columnListPath,
+			String destPath, Integer thresholdvalue, String filterField, String filterType, String filterValue)
+			throws Exception {
+		// TODO Auto-generated constructor stub
 
 		// TODO Auto-generated method stub
 		System.out.println("Program Started...");
-		long startTime=System.nanoTime();
+		long startTime = System.nanoTime();
 		String HandlePath = handleListPath;
 		String columnPath = columnListPath;
 		File sourceFile = new File(sourcePath);
@@ -67,7 +68,8 @@ public class SIPTOCSVSubColSubRowWithFilter {
 		thresold = thresholdvalue;
 		filterfield = filterField;
 		filtertype = filterType;
-		filtervalue = filterValue;		System.out.println("HandlePath ..." + HandlePath);
+		filtervalue = filterValue;
+		System.out.println("HandlePath ..." + HandlePath);
 		System.out.println("columnPath .." + columnPath);
 		if (HandlePath.isBlank() || columnPath.isBlank()) {
 			throw new Exception("Wrong input [handle list]/[column].");
@@ -90,10 +92,10 @@ public class SIPTOCSVSubColSubRowWithFilter {
 		}
 		traverse(sourceFile);
 		long endTime = System.nanoTime();
-		System.out.println("Finished in :"+((endTime-startTime)/1000000000)/60+" Minute");
+		System.out.println("Finished in :" + ((endTime - startTime) / 1000000000) / 60 + " Minute");
 
-		
 	}
+
 	void traverse(File sourceFile) throws IOException {
 		// TODO Auto-generated method stub
 		TarGZCompressedFileReader reader = new TarGZCompressedFileReader(sourceFile);
@@ -112,11 +114,16 @@ public class SIPTOCSVSubColSubRowWithFilter {
 							if (!dataMap.isEmpty() && handleIDList.contains(dataMap.get("handleId").get(0))) {
 								for (Map.Entry mapElement : dataMap.entrySet()) {
 									String key = (String) mapElement.getKey();
-									ArrayList value = (ArrayList) mapElement.getValue();
-									if (key.contains(filterfield) && value.toString().matches(".*"+filtervalue+".*")) {
-										setrowSet(dataMap);
+									ArrayList<String> value = (ArrayList) mapElement.getValue();
+									if (key.equalsIgnoreCase(filterfield)) {
+										for (String eachValue : value) {
+											if (eachValue.equalsIgnoreCase(filtervalue)) {
+												setrowSet(dataMap);
+												break;
+											}
+										}
 									}
-								}							
+								}
 								count++;
 							}
 							dataMap.clear();
@@ -174,11 +181,15 @@ public class SIPTOCSVSubColSubRowWithFilter {
 							System.exit(0);
 						}
 					}
-					rowsetiterator(subrowSet);	
+					rowsetiterator(subrowSet);
 				}
-
-			}
-			else if (isContain(filtertype, "valuelist")) {
+			} else if (isContain(filtertype, "valuelist")) {
+				filtervalue = filtervalue.replaceAll("^\"|\"$", "");
+				ArrayList<String> arr_filterValue = new ArrayList<String>();
+				String[] arr_str = filtervalue.split("\",\"");
+				for (String arr_val : arr_str) {
+					arr_filterValue.add(arr_val);
+				}
 				if (!headerList.isEmpty() && !handleIDList.isEmpty()) {
 					int item_count = 0;
 					while ((item = reader.next()) != null) {
@@ -190,15 +201,17 @@ public class SIPTOCSVSubColSubRowWithFilter {
 							if (!dataMap.isEmpty() && handleIDList.contains(dataMap.get("handleId").get(0))) {
 								for (Map.Entry mapElement : dataMap.entrySet()) {
 									String key = (String) mapElement.getKey();
-									ArrayList value = (ArrayList) mapElement.getValue();
-//								System.out.println("value :"+value);
-									String[] filtervalueArr = filtervalue.split(",");
-									for (String filterVal : filtervalueArr) {
-										if (key.contains(filterfield) && value.contains(filterVal)) {
-											setrowSet(dataMap);
+									ArrayList<String> value = (ArrayList) mapElement.getValue();
+									if (key.equalsIgnoreCase(filterfield)) {
+										for (String field_value : value) {
+											for (String arr_val : arr_filterValue) {
+												if (arr_val.equalsIgnoreCase(field_value)) {
+													setrowSet(dataMap);
+													break;
+												}
+											}
 										}
 									}
-
 								}
 								count++;
 							}
@@ -257,170 +270,169 @@ public class SIPTOCSVSubColSubRowWithFilter {
 							System.exit(0);
 						}
 					}
-					rowsetiterator(subrowSet);	
+					rowsetiterator(subrowSet);
 				}
 
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
-		
+
 	}
-	  private void rowsetiterator(Set<String[]> subrowSet) {
-			// TODO Auto-generated method stub
-			int x = 1;
-			if (subrowSet.size() % thresold == 0) {
-				for (String[] strings : subrowSet) {
-					subrowSet2.add(strings);
-					if (x % thresold == 0) {
-						multiplexmltocsv(outputpath, x);
-						subrowSet2.clear();
-					}
-					x++;
-				}
-			} else {
-				for (String[] strings : subrowSet) {
-					subrowSet2.add(strings);
-					if (x % thresold == 0) {
-						multiplexmltocsv(outputpath, x);
-						subrowSet2.clear();
-					}
-					x++;
-				}
-				multiplexmltocsv(outputpath, --x);
-			}
-		}
-	 void multiplexmltocsv(String outputpath, int count) {
-			String pathName = outputpath;
-			String csvName = outputpath + count + ".csv";
-			System.out.println("path name" + csvName);
-			File csvFile = new File(csvName);
 
-			String[] header = new String[nodeindexMap.size()];
-
-			try {
-				FileWriter fW = new FileWriter(csvFile);
-				if (freshheaderList.size() > 0) {
-					CSVPrinter csvPrinter = new CSVPrinter(fW,
-							CSVFormat.DEFAULT.withHeader(freshheaderList.toArray(new String[0])));
-					for (String[] myonerow : subrowSet2) {
-						csvPrinter.printRecord(Arrays.asList(myonerow));
-					}
-					csvPrinter.close();
+	private void rowsetiterator(Set<String[]> subrowSet) {
+		// TODO Auto-generated method stub
+		int x = 1;
+		if (subrowSet.size() % thresold == 0) {
+			for (String[] strings : subrowSet) {
+				subrowSet2.add(strings);
+				if (x % thresold == 0) {
+					multiplexmltocsv(outputpath, x);
 					subrowSet2.clear();
-				} else {
-					CSVPrinter csvPrinter = new CSVPrinter(fW, CSVFormat.DEFAULT.withHeader(header));
-					for (String[] onerow : rowSet) {
-						System.out.println("one row :" + onerow);
-						csvPrinter.printRecord(Arrays.asList(onerow));
-					}
-					csvPrinter.close();
-					rowSet.clear();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				x++;
 			}
+		} else {
+			for (String[] strings : subrowSet) {
+				subrowSet2.add(strings);
+				if (x % thresold == 0) {
+					multiplexmltocsv(outputpath, x);
+					subrowSet2.clear();
+				}
+				x++;
+			}
+			multiplexmltocsv(outputpath, --x);
 		}
+	}
+
+	void multiplexmltocsv(String outputpath, int count) {
+		String pathName = outputpath;
+		String csvName = outputpath + count + ".csv";
+		System.out.println("path name" + csvName);
+		File csvFile = new File(csvName);
+
+		String[] header = new String[nodeindexMap.size()];
+
+		try {
+			FileWriter fW = new FileWriter(csvFile);
+			if (freshheaderList.size() > 0) {
+				CSVPrinter csvPrinter = new CSVPrinter(fW,
+						CSVFormat.DEFAULT.withHeader(freshheaderList.toArray(new String[0])));
+				for (String[] myonerow : subrowSet2) {
+					csvPrinter.printRecord(Arrays.asList(myonerow));
+				}
+				csvPrinter.close();
+				subrowSet2.clear();
+			} else {
+				CSVPrinter csvPrinter = new CSVPrinter(fW, CSVFormat.DEFAULT.withHeader(header));
+				for (String[] onerow : rowSet) {
+					System.out.println("one row :" + onerow);
+					csvPrinter.printRecord(Arrays.asList(onerow));
+				}
+				csvPrinter.close();
+				rowSet.clear();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	void parseDublin(String fileContent) {
-			// TODO Auto-generated method stub
-			try {
-				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-				dbf.setValidating(false);
-				DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-				Document dcf = documentBuilder.parse(new InputSource(new java.io.StringReader(fileContent)));
-				dcf.getDocumentElement();
+		// TODO Auto-generated method stub
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setValidating(false);
+			DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+			Document dcf = documentBuilder.parse(new InputSource(new java.io.StringReader(fileContent)));
+			dcf.getDocumentElement();
 
-				// Parse attributes of root nodes
-				Element rootElement = dcf.getDocumentElement();
-				ArrayList rootElementList = listallAttributes(rootElement);
-				String attrVal = rootElementList.get(0).toString();
+			// Parse attributes of root nodes
+			Element rootElement = dcf.getDocumentElement();
+			ArrayList rootElementList = listallAttributes(rootElement);
+			String attrVal = rootElementList.get(0).toString();
 
-				NodeList nList = dcf.getDocumentElement().getChildNodes();
-				nodeindexMap.put("WEL_V2/ID", 0);
-				for (int i = 0; i < nList.getLength(); i++) {
-					Node nNode = nList.item(i);
-					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-						Element eElement = (Element) nNode;
-						ArrayList attrlist = listallAttributes(eElement);
-						int listSize = attrlist.size();
-						String columnname = "";
+			NodeList nList = dcf.getDocumentElement().getChildNodes();
+			nodeindexMap.put("WEL_V2/ID", 0);
+			for (int i = 0; i < nList.getLength(); i++) {
+				Node nNode = nList.item(i);
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element eElement = (Element) nNode;
+					ArrayList attrlist = listallAttributes(eElement);
+					int listSize = attrlist.size();
+					String columnname = "";
 
-						for (int k = 0; k < listSize; k++) {
-							if (k == (listSize - 1)) {
-								columnname = columnname + attrlist.get(k);
-							} else {
-								columnname = columnname + attrlist.get(k) + ".";
-							}
-						}
-						columnname = attrVal + "." + columnname;
-						if (!nodeindexMap.containsKey(columnname)) {
-							nodeindexMap.put(columnname, counter++);
-						}
-						String textContent = eElement.getTextContent();
-						if (dataMap.containsKey(columnname)) {
-							dataMap.get(columnname).add(textContent);
+					for (int k = 0; k < listSize; k++) {
+						if (k == (listSize - 1)) {
+							columnname = columnname + attrlist.get(k);
 						} else {
-							dataMap.put(columnname, new ArrayList<>() {
-								{
-									add(textContent);
-								}
-							});
+							columnname = columnname + attrlist.get(k) + ".";
 						}
 					}
+					columnname = attrVal + "." + columnname;
+					if (!nodeindexMap.containsKey(columnname)) {
+						nodeindexMap.put(columnname, counter++);
+					}
+					String textContent = eElement.getTextContent();
+					if (dataMap.containsKey(columnname)) {
+						dataMap.get(columnname).add(textContent);
+					} else {
+						dataMap.put(columnname, new ArrayList<>() {
+							{
+								add(textContent);
+							}
+						});
+					}
 				}
-
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
 			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
-	 ArrayList listallAttributes(Element rootElement) {
-			// get a map containing the attributes of this node
-			NamedNodeMap attributes = rootElement.getAttributes();
-			// get the number of nodes in this map
-			int numAttrs = attributes.getLength();
-			ArrayList<String> attributeslist = new ArrayList<String>();
+	}
 
-			for (int i = 0; i < numAttrs; i++) {
-				Attr attr = (Attr) attributes.item(i);
-				String attrName = attr.getNodeName();
-				String attrValue = attr.getNodeValue();
-				attributeslist.add(attrValue);
-			}
-			return attributeslist;
+	ArrayList listallAttributes(Element rootElement) {
+		// get a map containing the attributes of this node
+		NamedNodeMap attributes = rootElement.getAttributes();
+		// get the number of nodes in this map
+		int numAttrs = attributes.getLength();
+		ArrayList<String> attributeslist = new ArrayList<String>();
+
+		for (int i = 0; i < numAttrs; i++) {
+			Attr attr = (Attr) attributes.item(i);
+			String attrName = attr.getNodeName();
+			String attrValue = attr.getNodeValue();
+			attributeslist.add(attrValue);
 		}
-	 private static boolean isContain(String source, String subItem) {
-			String pattern = "\\b" + subItem + "\\b";
-			Pattern p = Pattern.compile(pattern);
-			Matcher m = p.matcher(source);
-			return m.find();
-		}
+		return attributeslist;
+	}
+
+	private static boolean isContain(String source, String subItem) {
+		String pattern = "\\b" + subItem + "\\b";
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(source);
+		return m.find();
+	}
+
 	void setrowSet(HashMap<String, ArrayList<String>> valueMap) {
-			// TODO Auto-generated method stub
-			String[] row = new String[nodeindexMap.size()];
-			for (Map.Entry<String, ArrayList<String>> entry : valueMap.entrySet()) {
-				String columnname = entry.getKey();
-				int columnindex = 0;
+		// TODO Auto-generated method stub
+		String[] row = new String[nodeindexMap.size()];
+		for (Map.Entry<String, ArrayList<String>> entry : valueMap.entrySet()) {
+			String columnname = entry.getKey();
+			int columnindex = 0;
 
-				if (nodeindexMap.containsKey(columnname))
-					columnindex = nodeindexMap.get(columnname);
+			if (nodeindexMap.containsKey(columnname))
+				columnindex = nodeindexMap.get(columnname);
 
-				if (!nodeindexMap.containsKey(columnname)) {
-				}
-				String data = "";
-				for (String eachValue : entry.getValue()) {
-					data += eachValue + "|";
-				}
-				data = data.replaceAll("\\|$", ""); // replace the last "|"
-
-//				data = data.replaceAll("\\|\\s$", "");
-//				data = data.trim();
-
-				row[columnindex] = data;
+			if (!nodeindexMap.containsKey(columnname)) {
 			}
-			row[0] = valueMap.get("handleId").get(0);
-			rowSet.add(row);
+			String data = "";
+			for (String eachValue : entry.getValue()) {
+				data += eachValue + "|";
+			}
+			data = data.replaceAll("\\|$", ""); // replace the last "|"
+			row[columnindex] = data;
 		}
-
+		row[0] = valueMap.get("handleId").get(0);
+		rowSet.add(row);
+	}
 }

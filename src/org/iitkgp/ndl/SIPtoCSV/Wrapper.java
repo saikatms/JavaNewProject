@@ -8,8 +8,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 
-import SIPConversion.FieldDatabyFilterNew;
-
 public class Wrapper {
 	/*
 	 * @author Saikat
@@ -37,7 +35,6 @@ public class Wrapper {
 				columnListPath = prop.getProperty("columnList");
 
 			String itemSelector = prop.getProperty("itemSelector");
-//			String partialList=prop.getProperty("partialList");
 
 			String LogPath = "";
 			if (prop.containsKey("logPath")) {
@@ -63,7 +60,7 @@ public class Wrapper {
 			if (filter.contains("false")) {
 				if (handleListPath.isBlank() && columnListPath.isBlank() && !sourcePath.isBlank() && !destPath.isBlank()
 						&& !threshold.isBlank() && LogPath.isBlank()) {
-					System.out.println("Do you want to get all dump data : Choose(Y/N)");
+					System.out.println("Do you want all dump data : Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
@@ -81,17 +78,16 @@ public class Wrapper {
 				else if (!sourcePath.isBlank() && !destPath.isBlank() && !columnListPath.isBlank()
 						&& handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()
 						&& itemSelector.contains("true")) {
-					System.out.println("Do you want dump data for choosen field and true item selector ?: Choose(Y/N)");
+					System.out.println(
+							"Do you want dump data for chosen field and select items where the values available?: Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
-//					System.out.println("If some field choosed ... For those id whose all those field exist... then only that id willl be shown in CSV  ");
-
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
 						SIP2CSVChooseColumn_v2 chooseColumn = new SIP2CSVChooseColumn_v2(sourcePath, destPath,
 								columnListPath, thresholdvalue);
 					} else {
 						System.out.println(
-								"You don't want dump data for choosen field and true item selector... program terminated");
+								"You don't want dump data for chosen field and true item selector... program terminated");
 					}
 				}
 				// ********
@@ -100,7 +96,7 @@ public class Wrapper {
 						&& itemSelector.contains("false")) {
 
 					System.out.println(
-							"Do you want dump data for some choosen field and false item selector : Choose(Y/N)");
+							"Do you want dump data for some chosen field where value may be present or not? : Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
@@ -109,7 +105,7 @@ public class Wrapper {
 						System.out.println("Choose Column");
 					} else {
 						System.out.println(
-								"You don't want dump data for some choosen field and false item selector... Program terminated ");
+								"You don't want dump data for some chosen field and false item selector... Program terminated ");
 					}
 
 				} else if (!sourcePath.isBlank() && !destPath.isBlank() && columnListPath.isBlank()
@@ -128,7 +124,7 @@ public class Wrapper {
 						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")
 						&& LogPath.isBlank()) {
 					System.out.println(
-							"Do you want dump data for some given Handle ID and its choosen field value where item selector is false ? Choose(Y/N)");
+							"Do you want dump data for some given Handle ID and its choosen field value where value may be present or not? Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
@@ -143,7 +139,7 @@ public class Wrapper {
 						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")
 						&& LogPath.isBlank()) {
 					System.out.println(
-							"Do you want dump data for some given Handle ID and its choosen field value where item selector is true ? Choose(Y/N)");
+							"Do you want dump data for some given Handle ID and its chosen field value where all values are present ? Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
@@ -172,7 +168,7 @@ public class Wrapper {
 						&& handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()
 						&& itemSelector.contains("false")) {
 					System.out.println(
-							"Do you want dump data for some choosen field and false item selector with filter ? Choose(Y/N)");
+							"Do you want dump data for some chosen field and false item selector with filter ? Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
@@ -181,14 +177,14 @@ public class Wrapper {
 								FilterValue);
 					} else {
 						System.out.println(
-								"You don't want dump data for some choosen field and false item selector... Program terminated ");
+								"You don't want dump data for some chosen field and false item selector... Program terminated ");
 					}
 
 				} else if (!sourcePath.isBlank() && !destPath.isBlank() && columnListPath.isBlank()
 						&& !handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()
 						&& itemSelector.contains("false")) {
 					System.out.println(
-							"Do you want all filed data for some given handle ID  and filter is applied?: Choose(Y/N)");
+							"Do you want all filed data for some given handle ID where item selector is false and filter is applied?: Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
@@ -203,92 +199,66 @@ public class Wrapper {
 						&& handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()
 						&& itemSelector.contains("true")) {
 					System.out.println(
-							"Do you want dump data for some choosen field value where item selector is true and filter ios applied? Choose(Y/N)");
+							"Do you want dump data for some chosen field value where item selector is true and filter is applied? Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
-					SIPTOCSVCsooseColumnWIthFilterItemSelector ChooseColumnItemSelector = new SIPTOCSVCsooseColumnWIthFilterItemSelector(
-							sourcePath, destPath, columnListPath, thresholdvalue, FilterField, FilterType, FilterValue);
-					}
-					else
-					{
+						SIPTOCSVCsooseColumnWIthFilterItemSelector ChooseColumnItemSelector = new SIPTOCSVCsooseColumnWIthFilterItemSelector(
+								sourcePath, destPath, columnListPath, thresholdvalue, FilterField, FilterType,
+								FilterValue);
+					} else {
 						System.out.println("Program Terminated");
 					}
 				} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
 						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")
 						&& LogPath.isBlank()) {
 					System.out.println(
-							"Do you want dump data for some given Handle ID and its choosen field value where item selector is false and filter applied ? Choose(Y/N)");
+							"Do you want dump data for some given Handle ID and its chosen field value where item selector is false and filter applied ? Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
 						SIPTOCSVSubColSubRowWithFilter subColSubRowFilter = new SIPTOCSVSubColSubRowWithFilter(
 								handleListPath, sourcePath, columnListPath, destPath, thresholdvalue, FilterField,
 								FilterType, FilterValue);
-					}
-					else
-					{
+					} else {
 						System.out.println("program terminated");
 					}
 				} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
 						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")
 						&& LogPath.isBlank()) {
 					System.out.println(
-							"Do you want dump data for some given Handle ID and its choosen field value where item selector is true  and filter applied? Choose(Y/N)");
+							"Do you want dump data for some given Handle ID and its chosen field value where item selector is true  and filter applied? Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
-					SIPTOCSVSubColSubRowWithFilterAndItemSelector scsrFilterAndItemselector = new SIPTOCSVSubColSubRowWithFilterAndItemSelector(
-							handleListPath, sourcePath, columnListPath, destPath, thresholdvalue, FilterField,
-							FilterType, FilterValue);
-					}
-					else
-					{
-						System.out.println("program terminated");
+						SIPTOCSVSubColSubRowWithFilterAndItemSelector scsrFilterAndItemselector = new SIPTOCSVSubColSubRowWithFilterAndItemSelector(
+								handleListPath, sourcePath, columnListPath, destPath, thresholdvalue, FilterField,
+								FilterType, FilterValue);
+					} else {
+						System.out.println("Program Terminated due to wrong input");
 					}
 				}
-
-			}
-			else
-			{
+			} else {
 				System.out.println("Program terminated due to invalid input format");
 			}
-
-			// This is for analyzer
-//			else if (!sourcePath.isBlank() && !LogPath.isBlank() && !FilterField.isBlank() && !FilterType.isBlank()
-//					&& !FilterValue.isBlank() && !ContinuousMatch.isBlank() && !Lftokenizer.isBlank()
-//					&& !rttokenizer.isBlank() && !IgnoreCase.isBlank()) {
-//				FieldDataByFilter filterr = new FieldDataByFilter(sourcePath, LogPath, FilterField, FilterType,
-//						FilterValue, ListPath, ContinuousMatch, Lftokenizer, rttokenizer, IgnoreCase);
-//			}
-
-		}
-
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println(e);
 			System.out.println("you are using expression match but expression is not properly given in property file");
 			System.out.println("Please uncomment the expression from properties file or provide a valid expression ");
-//			if(runType.equalsIgnoreCase("-e") && prop.getProperty("expression").isEmpty()) {
-//				System.out.println("RunType is -E however EXPRESSION is not specified. Program Terminating.");
-//			}
 		}
-
 	}
 
 	public static Properties allExceptionHandle(String args[]) throws Exception {
 		if (args.length > 1)
 			throw new ArithmeticException(
-					"Wrong Input Argument. Command Syntax : java -jar FieldDatabyFilter.jar <ConfigFilePath>");
+					"Wrong Input Argument. Command Syntax : java -jar SIPtoCSV.jar <ConfigFilePath>");
 
 		if (args.length == 0 || args[0].isEmpty()) {
 			throw new NullPointerException("Please provide valid configFile Path.");
 		}
-
 		Properties prop = new Properties();
 		File properties = new File(args[0]);
-
 		InputStream input = new FileInputStream(properties);
-
 		prop.load(input);
 		return prop;
 	}
