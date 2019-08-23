@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
 
 import com.opencsv.CSVReader;
 
-public class SIPTOCSVSubColSubRowWithFilter {
+public class SIPTOCSVSubColSubRowWithInverseFilterAndItemSelector {
 	public static int count = 0;
 	static int counter = 1;
 	private static Map<String, Integer> nodeindexMap = new HashMap<String, Integer>();
@@ -53,10 +53,9 @@ public class SIPTOCSVSubColSubRowWithFilter {
 	public static String p = "";
 	int rowcount;
 
-	public SIPTOCSVSubColSubRowWithFilter(String handleListPath, String sourcePath, String columnListPath,
-			String destPath, Integer thresholdvalue, String filterField, String filterType, String filterValue)
-			throws Exception {
-		// TODO Auto-generated constructor stub
+	public SIPTOCSVSubColSubRowWithInverseFilterAndItemSelector(String handleListPath, String sourcePath,
+			String columnListPath, String destPath, Integer thresholdvalue, String filterField, String filterType,
+			String filterValue) throws Exception {
 
 		// TODO Auto-generated method stub
 		System.out.println("Program Started...");
@@ -72,6 +71,7 @@ public class SIPTOCSVSubColSubRowWithFilter {
 		if (HandlePath.isBlank() || columnPath.isBlank()) {
 			throw new Exception("Wrong input [handle list]/[column].");
 		}
+
 		if (!HandlePath.isBlank()) {
 			CSVReader handleCsvReader = new CSVReader(new FileReader(HandlePath));
 			for (String[] row : handleCsvReader.readAll()) {
@@ -89,7 +89,14 @@ public class SIPTOCSVSubColSubRowWithFilter {
 		}
 		traverse(sourceFile);
 		long endTime = System.nanoTime();
-		System.out.println("Finished in :" + ((endTime - startTime) / 1000000000) / 60 + " Minute");
+		System.out.println("Finished in : " + ((endTime - startTime) / 1000000000) / 60 + " Minute");
+	}
+
+	private static boolean isContain(String source, String subItem) {
+		String pattern = "\\b" + subItem + "\\b";
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(source);
+		return m.find();
 	}
 
 	void traverse(File sourceFile) throws IOException {
@@ -112,11 +119,15 @@ public class SIPTOCSVSubColSubRowWithFilter {
 									String key = (String) mapElement.getKey();
 									ArrayList<String> value = (ArrayList) mapElement.getValue();
 									if (key.equalsIgnoreCase(filterfield)) {
+										Integer flag = 0;
 										for (String eachValue : value) {
 											if (eachValue.equalsIgnoreCase(filtervalue)) {
-												setrowSet(dataMap);
+												flag = 1;
 												break;
 											}
+										}
+										if (flag == 0) {
+											setrowSet(dataMap);
 										}
 									}
 								}
@@ -177,8 +188,21 @@ public class SIPTOCSVSubColSubRowWithFilter {
 							System.exit(0);
 						}
 					}
-					rowsetiterator(subrowSet);
+
+					for (String[] subRow : subrowSet) {
+						boolean emptyCheck = false;
+						for (int i = 0; i < subRow.length; i++) {
+							if (subRow[i] == null) {
+								emptyCheck = true;
+							}
+						}
+						if (emptyCheck != true) {
+							subrowSet2.add(subRow);
+						}
+					}
+					rowsetiterator(subrowSet2);
 				}
+
 			} else if (isContain(filtertype, "valuelist")) {
 				filtervalue = filtervalue.replaceAll("^\"|\"$", "");
 				ArrayList<String> arr_filterValue = new ArrayList<String>();
@@ -199,13 +223,17 @@ public class SIPTOCSVSubColSubRowWithFilter {
 									String key = (String) mapElement.getKey();
 									ArrayList<String> value = (ArrayList) mapElement.getValue();
 									if (key.equalsIgnoreCase(filterfield)) {
+										Integer flag = 0;
 										for (String field_value : value) {
 											for (String arr_val : arr_filterValue) {
 												if (arr_val.equalsIgnoreCase(field_value)) {
-													setrowSet(dataMap);
+													flag = 1;
 													break;
 												}
 											}
+										}
+										if (flag == 0) {
+											setrowSet(dataMap);
 										}
 									}
 								}
@@ -266,14 +294,26 @@ public class SIPTOCSVSubColSubRowWithFilter {
 							System.exit(0);
 						}
 					}
-					rowsetiterator(subrowSet);
-				}
 
+					for (String[] subRow : subrowSet) {
+						boolean emptyCheck = false;
+						for (int i = 0; i < subRow.length; i++) {
+							if (subRow[i] == null) {
+								emptyCheck = true;
+							}
+						}
+
+						if (emptyCheck != true) {
+							subrowSet2.add(subRow);
+						}
+					}
+					rowsetiterator(subrowSet2);
+				}
 			}
+			// column list for given handleid
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
 	}
 
 	private void rowsetiterator(Set<String[]> subrowSet) {
@@ -304,7 +344,7 @@ public class SIPTOCSVSubColSubRowWithFilter {
 	void multiplexmltocsv(String outputpath, int count) {
 		String pathName = outputpath;
 		String csvName = outputpath + count + ".csv";
-		System.out.println("CSV Name : " + csvName);
+		System.out.println("CSV File : " + csvName);
 		File csvFile = new File(csvName);
 
 		String[] header = new String[nodeindexMap.size()];
@@ -379,6 +419,7 @@ public class SIPTOCSVSubColSubRowWithFilter {
 					}
 				}
 			}
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -399,13 +440,6 @@ public class SIPTOCSVSubColSubRowWithFilter {
 			attributeslist.add(attrValue);
 		}
 		return attributeslist;
-	}
-
-	private static boolean isContain(String source, String subItem) {
-		String pattern = "\\b" + subItem + "\\b";
-		Pattern p = Pattern.compile(pattern);
-		Matcher m = p.matcher(source);
-		return m.find();
 	}
 
 	void setrowSet(HashMap<String, ArrayList<String>> valueMap) {
@@ -430,4 +464,5 @@ public class SIPTOCSVSubColSubRowWithFilter {
 		row[0] = valueMap.get("handleId").get(0);
 		rowSet.add(row);
 	}
+
 }

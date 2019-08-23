@@ -1,5 +1,9 @@
 package org.iitkgp.ndl.SIPtoCSV;
 
+/*
+ * @author Saikat
+ */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -46,14 +50,12 @@ public class SIP2CSVChooseColumn_v2 {
 	private static List<String> headerList = new ArrayList<String>();
 	private static String outputPath = "";
 	private static int threShold = 0;
-//	private static int low = 0;
-//	private static int high = thresold;
 	public static String p = "";
 
 	public SIP2CSVChooseColumn_v2(String sourcePath, String destPath, String columnList, int thresold)
 			throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("Choosen Column Program Started...Please Wait till the end is up...");
+		System.out.println("Program Started...");
 		long startTime=System.nanoTime();
 		File sourceFile = new File(sourcePath);
 		outputPath = destPath;
@@ -181,7 +183,7 @@ public class SIP2CSVChooseColumn_v2 {
 		// TODO Auto-generated method stub
 		String Path = outputPath;
 		String csvName = Path + count + ".csv";
-		System.out.println("Out put path : " + csvName);
+		System.out.println("Output path : " + csvName);
 
 		File csvFile = new File(csvName);
 		String[] header = new String[nodeindexmap.size()];
@@ -277,7 +279,6 @@ public class SIP2CSVChooseColumn_v2 {
 	private static void setrowSet(HashMap<String, ArrayList<String>> valueMap) {
 		// TODO Auto-generated method stub
 		String[] row = new String[nodeindexmap.size()];
-//		System.out.println("row :" + row);
 		for (Map.Entry<String, ArrayList<String>> entry : valueMap.entrySet()) {
 			String columnname = entry.getKey();
 			int columnindex = 0;
@@ -286,14 +287,11 @@ public class SIP2CSVChooseColumn_v2 {
 			String data = "";
 			for (String eachValue : entry.getValue())
 				data += eachValue + "|";
-//			data = data.replaceAll("\\|\\s$", ""); // replace the last "|"
 			data = data.replaceAll("\\|$", "");// replace the last "|"
 			data = data.trim();			
 			row[columnindex] = data;
 		}
 		row[0] = valueMap.get("handleId").get(0);
 		rowset.add(row);
-
 	}
-
 }

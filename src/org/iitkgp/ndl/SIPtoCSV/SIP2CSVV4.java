@@ -63,7 +63,7 @@ public class SIP2CSVV4 {
 		if (source.exists()) {
 			traverse(source);
 		}
-		System.out.println("CSV file saved in :" + outputPath + "folder");
+		System.out.println("CSV file saved in :" + outputPath + " Directory");
 		long endTime = System.nanoTime();
 		System.out.println("Finished in : "+((endTime-startTime)/1000000000)/60+" Minute");
 	}

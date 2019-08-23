@@ -1,7 +1,6 @@
 package org.iitkgp.ndl.SIPtoCSV;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,7 +31,7 @@ import org.xml.sax.InputSource;
 
 import com.opencsv.CSVReader;
 
-public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
+public class SIPTOCSVCsooseColumnWIthInverseFilterItemSelector {
 	public static int count = 0;
 	static int counter = 1;
 	private static Map<String, Integer> nodeindexmap = new HashMap<String, Integer>();
@@ -50,9 +49,8 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 	private static int threShold = 0;
 	public static String p = "";
 
-	public SIPTOCSVCsooseColumnWIthFilterItemSelector(String sourcePath, String destPath, String columnListPath,
+	public SIPTOCSVCsooseColumnWIthInverseFilterItemSelector(String sourcePath, String destPath, String columnListPath,
 			Integer thresholdvalue, String filterField, String filterType, String filterValue) throws Exception {
-		// TODO Auto-generated method stub
 		System.out.println("Program Started...");
 		long startTime = System.nanoTime();
 		File sourceFile = new File(sourcePath);
@@ -70,13 +68,6 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 		traverse(sourceFile);
 		long endTime = System.nanoTime();
 		System.out.println("Finished in :" + ((endTime - startTime) / 1000000000) / 60 + " Minute");
-	}
-
-	private static boolean isContain(String source, String subItem) {
-		String pattern = "\\b" + subItem + "\\b";
-		Pattern p = Pattern.compile(pattern);
-		Matcher m = p.matcher(source);
-		return m.find();
 	}
 
 	void traverse(File sourceFile) throws IOException {
@@ -102,11 +93,15 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 								String key = (String) mapElement.getKey();
 								ArrayList<String> value = (ArrayList) mapElement.getValue();
 								if (key.equalsIgnoreCase(filterfield)) {
+									Integer flag = 0;
 									for (String eachValue : value) {
 										if (eachValue.equalsIgnoreCase(filtervalue)) {
-											setrowSet(dataMap);
+											flag = 1;
 											break;
 										}
+									}
+									if (flag == 0) {
+										setrowSet(dataMap);
 									}
 								}
 							}
@@ -197,15 +192,18 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 								String key = (String) mapElement.getKey();
 								ArrayList<String> value = (ArrayList) mapElement.getValue();
 								if (key.equalsIgnoreCase(filterfield)) {
+									Integer flag = 0;
 									for (String field_value : value) {
 										for (String arr_val : arr_filterValue) {
 											if (arr_val.equalsIgnoreCase(field_value)) {
-												setrowSet(dataMap);
+												flag = 1;
 												break;
 											}
 										}
 									}
-
+									if (flag == 0) {
+										setrowSet(dataMap);
+									}
 								}
 							}
 						}
@@ -262,7 +260,6 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 							emptyCheck = true;
 						}
 					}
-
 					if (emptyCheck != true) {
 						subrowSet2.add(subRow);
 					}
@@ -305,10 +302,8 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 		String Path = outputPath;
 		String csvName = Path + count + ".csv";
 		System.out.println("CSV File : " + csvName);
-
 		File csvFile = new File(csvName);
 		String[] header = new String[nodeindexmap.size()];
-
 		try {
 			FileWriter fW = new FileWriter(csvFile);
 			if (headerList.size() > 0) {
@@ -334,13 +329,34 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 		}
 	}
 
-	void parseDublin(String fileContentString) {
+	void setrowSet(HashMap<String, ArrayList<String>> valueMap) {
+		// TODO Auto-generated method stub
+		String[] row = new String[nodeindexmap.size()];
+		for (Map.Entry<String, ArrayList<String>> entry : valueMap.entrySet()) {
+			String columnname = entry.getKey();
+			int columnindex = 0;
+			if (nodeindexmap.containsKey(columnname))
+				columnindex = nodeindexmap.get(columnname);
+			String data = "";
+			for (String eachValue : entry.getValue())
+				data += eachValue + "|";
+			data = data.replaceAll("\\|$", "");// replace the last "|"
+			data = data.trim();
+
+			row[columnindex] = data;
+		}
+		row[0] = valueMap.get("handleId").get(0);
+		rowset.add(row);
+
+	}
+
+	void parseDublin(String fileContent) {
 		// TODO Auto-generated method stub
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setValidating(false);
 			DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-			Document dcf = documentBuilder.parse(new InputSource(new java.io.StringReader(fileContentString)));
+			Document dcf = documentBuilder.parse(new InputSource(new java.io.StringReader(fileContent)));
 			dcf.getDocumentElement();
 
 			// Paese attributes of root nodes
@@ -404,25 +420,11 @@ public class SIPTOCSVCsooseColumnWIthFilterItemSelector {
 		return attributeslist;
 	}
 
-	private static void setrowSet(HashMap<String, ArrayList<String>> valueMap) {
-		// TODO Auto-generated method stub
-		String[] row = new String[nodeindexmap.size()];
-		for (Map.Entry<String, ArrayList<String>> entry : valueMap.entrySet()) {
-			String columnname = entry.getKey();
-			int columnindex = 0;
-			if (nodeindexmap.containsKey(columnname))
-				columnindex = nodeindexmap.get(columnname);
-			String data = "";
-			for (String eachValue : entry.getValue())
-				data += eachValue + "|";
-			data = data.replaceAll("\\|$", "");// replace the last "|"
-			data = data.trim();
-
-			row[columnindex] = data;
-		}
-		row[0] = valueMap.get("handleId").get(0);
-		rowset.add(row);
-
+	private static boolean isContain(String source, String subItem) {
+		String pattern = "\\b" + subItem + "\\b";
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(source);
+		return m.find();
 	}
 
 }

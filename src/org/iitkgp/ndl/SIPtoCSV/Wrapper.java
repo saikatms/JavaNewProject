@@ -36,11 +36,6 @@ public class Wrapper {
 
 			String itemSelector = prop.getProperty("itemSelector");
 
-			String LogPath = "";
-			if (prop.containsKey("logPath")) {
-				LogPath = prop.getProperty("logPath");
-			}
-
 			String FilterField = "";
 			if (prop.containsKey("filterField")) {
 				FilterField = prop.getProperty("filterField");
@@ -55,17 +50,17 @@ public class Wrapper {
 			if (prop.containsKey("filterValue")) {
 				FilterValue = prop.getProperty("filterValue");
 			}
+			String FilterInverse = prop.getProperty("filterInverse");
 
 			// for no Filter
 			if (filter.contains("false")) {
 				if (handleListPath.isBlank() && columnListPath.isBlank() && !sourcePath.isBlank() && !destPath.isBlank()
-						&& !threshold.isBlank() && LogPath.isBlank()) {
-					System.out.println("Do you want all dump data : Choose(Y/N)");
+						&& !threshold.isBlank()) {
+					System.out.println("Do you want all dump data ?  Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
 						SIP2CSVV4 allitems = new SIP2CSVV4(sourcePath, destPath, thresholdvalue);
-						System.out.println("All items with all column");
 					} else {
 						System.out.println("You don't want all dump data... program terminated");
 					}
@@ -76,10 +71,9 @@ public class Wrapper {
 				 * in csv with its respective handle id and dc.contributer.author
 				 */
 				else if (!sourcePath.isBlank() && !destPath.isBlank() && !columnListPath.isBlank()
-						&& handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()
-						&& itemSelector.contains("true")) {
+						&& handleListPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")) {
 					System.out.println(
-							"Do you want dump data for chosen field and select items where the values available?: Choose(Y/N)");
+							"Do you want dump data for chosen field and select items where the values available?  Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
@@ -92,8 +86,7 @@ public class Wrapper {
 				}
 				// ********
 				else if (!sourcePath.isBlank() && !destPath.isBlank() && !columnListPath.isBlank()
-						&& handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()
-						&& itemSelector.contains("false")) {
+						&& handleListPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")) {
 
 					System.out.println(
 							"Do you want dump data for some chosen field where value may be present or not? : Choose(Y/N)");
@@ -109,7 +102,7 @@ public class Wrapper {
 					}
 
 				} else if (!sourcePath.isBlank() && !destPath.isBlank() && columnListPath.isBlank()
-						&& !handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()) {
+						&& !handleListPath.isBlank() && !threshold.isBlank()) {
 					System.out.println("Do you want all filed data for some given handle ID ?: Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
@@ -121,10 +114,9 @@ public class Wrapper {
 						System.out.println("You don't want dump data for some handle id... Program terminated ");
 					}
 				} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
-						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")
-						&& LogPath.isBlank()) {
+						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")) {
 					System.out.println(
-							"Do you want dump data for some given Handle ID and its choosen field value where value may be present or not? Choose(Y/N)");
+							"Do you want dump data for some given Handle ID and its choosen field where value may be present or not? Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
 					String yesNo = yesNoScan.next();
 					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
@@ -136,8 +128,7 @@ public class Wrapper {
 					}
 
 				} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
-						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")
-						&& LogPath.isBlank()) {
+						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")) {
 					System.out.println(
 							"Do you want dump data for some given Handle ID and its chosen field value where all values are present ? Choose(Y/N)");
 					Scanner yesNoScan = new Scanner(System.in);
@@ -152,94 +143,177 @@ public class Wrapper {
 				}
 
 			} else if (filter.contains("true")) {
-				if (handleListPath.isBlank() && columnListPath.isBlank() && !sourcePath.isBlank() && !destPath.isBlank()
-						&& !threshold.isBlank() && LogPath.isBlank()) {
-					System.out.println("Do you want to get all dump data where filter applied ? Choose(Y/N)");
-					Scanner yesNoScan = new Scanner(System.in);
-					String yesNo = yesNoScan.next();
-					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
-						SIP2CSVAllColumnAllRowWithFilter ACALWF = new SIP2CSVAllColumnAllRowWithFilter(sourcePath,
-								destPath, thresholdvalue, FilterField, FilterType, FilterValue);
-					} else {
-						System.out.println("You don't want all dump data for applied filter... program terminated");
-					}
+				if (FilterInverse.contains("false")) {
 
-				} else if (!sourcePath.isBlank() && !destPath.isBlank() && !columnListPath.isBlank()
-						&& handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()
-						&& itemSelector.contains("false")) {
-					System.out.println(
-							"Do you want dump data for some chosen field and false item selector with filter ? Choose(Y/N)");
-					Scanner yesNoScan = new Scanner(System.in);
-					String yesNo = yesNoScan.next();
-					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
-						SIPToCSVSubColumnWithFilter subColumnWithFilter = new SIPToCSVSubColumnWithFilter(
-								columnListPath, sourcePath, destPath, thresholdvalue, FilterField, FilterType,
-								FilterValue);
-					} else {
+					if (handleListPath.isBlank() && columnListPath.isBlank() && !sourcePath.isBlank()
+							&& !destPath.isBlank() && !threshold.isBlank()) {
+						System.out.println("Do you want to get all dump data where filter applied ? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIP2CSVAllColumnAllRowWithFilter ACALWF = new SIP2CSVAllColumnAllRowWithFilter(sourcePath,
+									destPath, thresholdvalue, FilterField, FilterType, FilterValue);
+						} else {
+							System.out.println("You don't want all dump data for applied filter... program terminated");
+						}
+
+					} else if (!sourcePath.isBlank() && !destPath.isBlank() && !columnListPath.isBlank()
+							&& handleListPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")) {
 						System.out.println(
-								"You don't want dump data for some chosen field and false item selector... Program terminated ");
-					}
+								"Do you want dump data for some chosen field and false item selector with filter ? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPToCSVSubColumnWithFilter subColumnWithFilter = new SIPToCSVSubColumnWithFilter(
+									columnListPath, sourcePath, destPath, thresholdvalue, FilterField, FilterType,
+									FilterValue);
+						} else {
+							System.out.println(
+									"You don't want dump data for some chosen field and false item selector... Program terminated ");
+						}
 
-				} else if (!sourcePath.isBlank() && !destPath.isBlank() && columnListPath.isBlank()
-						&& !handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()
-						&& itemSelector.contains("false")) {
-					System.out.println(
-							"Do you want all filed data for some given handle ID where item selector is false and filter is applied?: Choose(Y/N)");
-					Scanner yesNoScan = new Scanner(System.in);
-					String yesNo = yesNoScan.next();
-					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
-						SIPToCSVSubColumnWithFilter subHandleWithFilter = new SIPToCSVSubColumnWithFilter(
-								handleListPath, sourcePath, destPath, thresholdvalue, FilterField, FilterType,
-								FilterValue);
-					} else {
-						System.out.println("You don't want dump data for some handle id ... Program terminated ");
-					}
+					} else if (!sourcePath.isBlank() && !destPath.isBlank() && columnListPath.isBlank()
+							&& !handleListPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")) {
+						System.out.println(
+								"Do you want all filed data for some given handle ID where item selector is false and filter is applied?: Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPToCSVSubColumnWithFilter subHandleWithFilter = new SIPToCSVSubColumnWithFilter(
+									handleListPath, sourcePath, destPath, thresholdvalue, FilterField, FilterType,
+									FilterValue);
+						} else {
+							System.out.println("You don't want dump data for some handle id ... Program terminated ");
+						}
 
-				} else if (!sourcePath.isBlank() && !destPath.isBlank() && !columnListPath.isBlank()
-						&& handleListPath.isBlank() && !threshold.isBlank() && LogPath.isBlank()
-						&& itemSelector.contains("true")) {
-					System.out.println(
-							"Do you want dump data for some chosen field value where item selector is true and filter is applied? Choose(Y/N)");
-					Scanner yesNoScan = new Scanner(System.in);
-					String yesNo = yesNoScan.next();
-					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
-						SIPTOCSVCsooseColumnWIthFilterItemSelector ChooseColumnItemSelector = new SIPTOCSVCsooseColumnWIthFilterItemSelector(
-								sourcePath, destPath, columnListPath, thresholdvalue, FilterField, FilterType,
-								FilterValue);
-					} else {
-						System.out.println("Program Terminated");
+					} else if (!sourcePath.isBlank() && !destPath.isBlank() && !columnListPath.isBlank()
+							&& handleListPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")) {
+						System.out.println(
+								"Do you want dump data for some chosen field value where item selector is true and filter is applied? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPTOCSVCsooseColumnWIthFilterItemSelector ChooseColumnItemSelector = new SIPTOCSVCsooseColumnWIthFilterItemSelector(
+									sourcePath, destPath, columnListPath, thresholdvalue, FilterField, FilterType,
+									FilterValue);
+						} else {
+							System.out.println("Program Terminated");
+						}
+					} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
+							&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")) {
+						System.out.println(
+								"Do you want dump data for some given Handle ID and its chosen field value where item selector is false and filter applied ? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPTOCSVSubColSubRowWithFilter subColSubRowFilter = new SIPTOCSVSubColSubRowWithFilter(
+									handleListPath, sourcePath, columnListPath, destPath, thresholdvalue, FilterField,
+									FilterType, FilterValue);
+						} else {
+							System.out.println("program terminated");
+						}
+					} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
+							&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")) {
+						System.out.println(
+								"Do you want dump data for some given Handle ID and its chosen field value where item selector is true  and filter applied? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPTOCSVSubColSubRowWithFilterAndItemSelector scsrFilterAndItemselector = new SIPTOCSVSubColSubRowWithFilterAndItemSelector(
+									handleListPath, sourcePath, columnListPath, destPath, thresholdvalue, FilterField,
+									FilterType, FilterValue);
+						} else {
+							System.out.println("Program Terminated due to wrong input");
+						}
 					}
-				} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
-						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")
-						&& LogPath.isBlank()) {
-					System.out.println(
-							"Do you want dump data for some given Handle ID and its chosen field value where item selector is false and filter applied ? Choose(Y/N)");
-					Scanner yesNoScan = new Scanner(System.in);
-					String yesNo = yesNoScan.next();
-					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
-						SIPTOCSVSubColSubRowWithFilter subColSubRowFilter = new SIPTOCSVSubColSubRowWithFilter(
-								handleListPath, sourcePath, columnListPath, destPath, thresholdvalue, FilterField,
-								FilterType, FilterValue);
+				} else if (FilterInverse.contains("true")) {
+
+					if (handleListPath.isBlank() && columnListPath.isBlank() && !sourcePath.isBlank()
+							&& !destPath.isBlank() && !threshold.isBlank()) {
+						System.out
+								.println("Do you want to get all dump data where Inverse filter applied ? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPToCSVFilterInverse filterinverse = new SIPToCSVFilterInverse(sourcePath, destPath,
+									thresholdvalue, FilterField, FilterType, FilterValue);
+						} else {
+							System.out.println(
+									"You don't want all dump data for applied Inverse filter... program terminated");
+						}
+
+					} else if (!sourcePath.isBlank() && !destPath.isBlank() && !columnListPath.isBlank()
+							&& handleListPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")) {
+						System.out.println(
+								"Do you want dump data for some chosen field and false item selector with Inverse filter ? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPToCSVSubColumnWithInverseFilter subColumnWithFilter = new SIPToCSVSubColumnWithInverseFilter(
+									columnListPath, sourcePath, destPath, thresholdvalue, FilterField, FilterType,
+									FilterValue);
+						} else {
+							System.out.println(
+									"You don't want dump data for some chosen field with Inverse filter and false item selector... Program terminated ");
+						}
+					} else if (!sourcePath.isBlank() && !destPath.isBlank() && columnListPath.isBlank()
+							&& !handleListPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")) {
+						System.out.println(
+								"Do you want all filed data for some given handle ID where item selector is false and Inverse filter is applied?: Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPToCSVSubColumnWithInverseFilter subHandleWithFilter = new SIPToCSVSubColumnWithInverseFilter(
+									handleListPath, sourcePath, destPath, thresholdvalue, FilterField, FilterType,
+									FilterValue);
+						} else {
+							System.out.println("You don't want dump data for some handle id ... Program terminated ");
+						}
+					} else if (!sourcePath.isBlank() && !destPath.isBlank() && !columnListPath.isBlank()
+							&& handleListPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")) {
+
+						System.out.println(
+								"Do you want dump data for some chosen field value where item selector is true and Inverse filter is applied? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPTOCSVCsooseColumnWIthInverseFilterItemSelector ChooseColumnItemSelector = new SIPTOCSVCsooseColumnWIthInverseFilterItemSelector(
+									sourcePath, destPath, columnListPath, thresholdvalue, FilterField, FilterType,
+									FilterValue);
+						} else {
+							System.out.println("Program Terminated");
+						}
+					} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
+							&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("false")) {
+
+						System.out.println(
+								"Do you want dump data for some given Handle ID and its chosen field value where item selector is false and Inverse filter applied ? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPTOCSVSubColSubRowWithInverseFilter subColSubRowFilter = new SIPTOCSVSubColSubRowWithInverseFilter(
+									handleListPath, sourcePath, columnListPath, destPath, thresholdvalue, FilterField,
+									FilterType, FilterValue);
+						} else {
+							System.out.println("program terminated");
+						}
+					} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
+							&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")) {
+						System.out.println(
+								"Do you want dump data for some given Handle ID and its chosen field value where item selector is true and Inverse filter applied? Choose(Y/N)");
+						Scanner yesNoScan = new Scanner(System.in);
+						String yesNo = yesNoScan.next();
+						if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
+							SIPTOCSVSubColSubRowWithInverseFilterAndItemSelector scsrFilterAndItemselector = new SIPTOCSVSubColSubRowWithInverseFilterAndItemSelector(
+									handleListPath, sourcePath, columnListPath, destPath, thresholdvalue, FilterField,
+									FilterType, FilterValue);
+						} else {
+							System.out.println("Program Terminated due to wrong input");
+						}
 					} else {
-						System.out.println("program terminated");
-					}
-				} else if (!sourcePath.isBlank() && !handleListPath.isBlank() && !columnListPath.isBlank()
-						&& !destPath.isBlank() && !threshold.isBlank() && itemSelector.contains("true")
-						&& LogPath.isBlank()) {
-					System.out.println(
-							"Do you want dump data for some given Handle ID and its chosen field value where item selector is true  and filter applied? Choose(Y/N)");
-					Scanner yesNoScan = new Scanner(System.in);
-					String yesNo = yesNoScan.next();
-					if (yesNo.equalsIgnoreCase("y") || yesNo.equalsIgnoreCase("yes")) {
-						SIPTOCSVSubColSubRowWithFilterAndItemSelector scsrFilterAndItemselector = new SIPTOCSVSubColSubRowWithFilterAndItemSelector(
-								handleListPath, sourcePath, columnListPath, destPath, thresholdvalue, FilterField,
-								FilterType, FilterValue);
-					} else {
-						System.out.println("Program Terminated due to wrong input");
+						System.out.println("Program Terminated due to invalid input format");
 					}
 				}
-			} else {
-				System.out.println("Program terminated due to invalid input format");
 			}
 		} catch (Exception e) {
 			System.out.println(e);

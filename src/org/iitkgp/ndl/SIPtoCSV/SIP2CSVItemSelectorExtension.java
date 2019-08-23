@@ -60,8 +60,6 @@ public class SIP2CSVItemSelectorExtension {
 		File sourceFile = new File(sourcePath);
 		outputpath = destPath;
 		thresold = thresholdvalue;
-		System.out.println("HandlePath ..." + HandlePath);
-		System.out.println("columnPath .." + columnPath);
 		if (HandlePath.isBlank() || columnPath.isBlank()) {
 			throw new Exception("Wrong input [handle list]/[column].");
 		}
@@ -83,7 +81,7 @@ public class SIP2CSVItemSelectorExtension {
 		}
 		traverse(sourceFile);
 		long endTime = System.nanoTime();
-		System.out.println("Finished in :" + ((endTime - startTime) / 1000000000) / 60 + " Minute");
+		System.out.println("Finished in : " + ((endTime - startTime) / 1000000000) / 60 + " Minute");
 	}
 
 	void traverse(File sourceFile) throws IOException {
@@ -203,7 +201,7 @@ public class SIP2CSVItemSelectorExtension {
 	void multiplexmltocsv(String outputpath, int count) {
 		String pathName = outputpath;
 		String csvName = outputpath + count + ".csv";
-		System.out.println("path name" + csvName);
+		System.out.println("CSV File : " + csvName);
 		File csvFile = new File(csvName);
 
 		String[] header = new String[nodeindexMap.size()];
@@ -221,7 +219,6 @@ public class SIP2CSVItemSelectorExtension {
 			} else {
 				CSVPrinter csvPrinter = new CSVPrinter(fW, CSVFormat.DEFAULT.withHeader(header));
 				for (String[] onerow : rowSet) {
-					System.out.println("one row :" + onerow);
 					csvPrinter.printRecord(Arrays.asList(onerow));
 				}
 				csvPrinter.close();

@@ -57,14 +57,12 @@ public class SIP2CSVWithHandleID_v2 {
 
 		// TODO Auto-generated method stub
 		System.out.println("Program Started...");
-		long startTime=System.nanoTime();
+		long startTime = System.nanoTime();
 		String HandlePath = HandleList;
 		String columnPath = columnList;
 		File sourceFile = new File(source);
 		outputpath = destPath;
 		thresold = threSholdvalue;
-		System.out.println("HandlePath ..." + HandlePath);
-		System.out.println("columnPath .." + columnPath);
 		if (HandlePath.isBlank() || columnPath.isBlank()) {
 			throw new Exception("Wrong input [handle list]/[column].");
 		}
@@ -86,8 +84,8 @@ public class SIP2CSVWithHandleID_v2 {
 		}
 		traverse(sourceFile);
 		long endTime = System.nanoTime();
-		System.out.println("Finished in :"+((endTime-startTime)/1000000000)/60+" Minute");
-}
+		System.out.println("Finished in : " + ((endTime - startTime) / 1000000000) / 60 + " Minute");
+	}
 
 	// Sub Column of all handle id or All column for some particular handle id //
 
@@ -122,7 +120,7 @@ public class SIP2CSVWithHandleID_v2 {
 		}
 		traverse(sourceFile);
 		long end = System.currentTimeMillis();
-		System.out.println("Finished in " + (end - start) / (1000 * 60) + "m");
+		System.out.println("Finished in : " + (end - start) / (1000 * 60) + "m");
 	}
 
 	// Iteration of tar.gz file operation done here
@@ -134,7 +132,7 @@ public class SIP2CSVWithHandleID_v2 {
 		try {
 			if (!headerList.isEmpty() && handleIDList.isEmpty()) {
 				// Choose Column for all id
-				System.out.println("Choose Column Operation Started... Please Wait");
+				System.out.println("Program Started...");
 
 				// Iteration of tar.gz file operation done here
 				while ((item = reader.next()) != null) {
@@ -377,7 +375,7 @@ public class SIP2CSVWithHandleID_v2 {
 		// TODO Auto-generated method stub
 		String pathName = outputpath;
 		String csvName = outputpath + rowcount + ".csv";
-		System.out.println("path name" + csvName);
+		System.out.println("CSV File : " + csvName);
 		File csvFile = new File(csvName);
 
 		String[] header;
@@ -402,7 +400,7 @@ public class SIP2CSVWithHandleID_v2 {
 	void multiplexmltocsv(String outputpath, int count) {
 		String pathName = outputpath;
 		String csvName = outputpath + count + ".csv";
-		System.out.println("path name" + csvName);
+		System.out.println("CSV File : " + csvName);
 		File csvFile = new File(csvName);
 
 		String[] header = new String[nodeindexMap.size()];
@@ -420,7 +418,6 @@ public class SIP2CSVWithHandleID_v2 {
 			} else {
 				CSVPrinter csvPrinter = new CSVPrinter(fW, CSVFormat.DEFAULT.withHeader(header));
 				for (String[] onerow : rowSet) {
-					System.out.println("one row :" + onerow);
 					csvPrinter.printRecord(Arrays.asList(onerow));
 				}
 				csvPrinter.close();

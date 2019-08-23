@@ -68,8 +68,6 @@ public class SIPTOCSVSubColSubRowWithFilterAndItemSelector {
 		filterfield = filterField;
 		filtertype = filterType;
 		filtervalue = filterValue;
-		System.out.println("HandlePath ..." + HandlePath);
-		System.out.println("columnPath .." + columnPath);
 		if (HandlePath.isBlank() || columnPath.isBlank()) {
 			throw new Exception("Wrong input [handle list]/[column].");
 		}
@@ -91,7 +89,7 @@ public class SIPTOCSVSubColSubRowWithFilterAndItemSelector {
 		}
 		traverse(sourceFile);
 		long endTime = System.nanoTime();
-		System.out.println("Finished in :" + ((endTime - startTime) / 1000000000) / 60 + " Minute");
+		System.out.println("Finished in : " + ((endTime - startTime) / 1000000000) / 60 + " Minute");
 	}
 
 	private static boolean isContain(String source, String subItem) {
@@ -338,7 +336,7 @@ public class SIPTOCSVSubColSubRowWithFilterAndItemSelector {
 	void multiplexmltocsv(String outputpath, int count) {
 		String pathName = outputpath;
 		String csvName = outputpath + count + ".csv";
-		System.out.println("path name" + csvName);
+		System.out.println("CSV File : " + csvName);
 		File csvFile = new File(csvName);
 
 		String[] header = new String[nodeindexMap.size()];
@@ -356,7 +354,6 @@ public class SIPTOCSVSubColSubRowWithFilterAndItemSelector {
 			} else {
 				CSVPrinter csvPrinter = new CSVPrinter(fW, CSVFormat.DEFAULT.withHeader(header));
 				for (String[] onerow : rowSet) {
-					System.out.println("one row :" + onerow);
 					csvPrinter.printRecord(Arrays.asList(onerow));
 				}
 				csvPrinter.close();

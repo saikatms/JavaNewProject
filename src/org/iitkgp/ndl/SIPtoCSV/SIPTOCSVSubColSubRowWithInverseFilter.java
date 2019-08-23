@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
 
 import com.opencsv.CSVReader;
 
-public class SIPTOCSVSubColSubRowWithFilter {
+public class SIPTOCSVSubColSubRowWithInverseFilter {
 	public static int count = 0;
 	static int counter = 1;
 	private static Map<String, Integer> nodeindexMap = new HashMap<String, Integer>();
@@ -53,7 +53,7 @@ public class SIPTOCSVSubColSubRowWithFilter {
 	public static String p = "";
 	int rowcount;
 
-	public SIPTOCSVSubColSubRowWithFilter(String handleListPath, String sourcePath, String columnListPath,
+	public SIPTOCSVSubColSubRowWithInverseFilter(String handleListPath, String sourcePath, String columnListPath,
 			String destPath, Integer thresholdvalue, String filterField, String filterType, String filterValue)
 			throws Exception {
 		// TODO Auto-generated constructor stub
@@ -72,6 +72,7 @@ public class SIPTOCSVSubColSubRowWithFilter {
 		if (HandlePath.isBlank() || columnPath.isBlank()) {
 			throw new Exception("Wrong input [handle list]/[column].");
 		}
+
 		if (!HandlePath.isBlank()) {
 			CSVReader handleCsvReader = new CSVReader(new FileReader(HandlePath));
 			for (String[] row : handleCsvReader.readAll()) {
@@ -112,11 +113,15 @@ public class SIPTOCSVSubColSubRowWithFilter {
 									String key = (String) mapElement.getKey();
 									ArrayList<String> value = (ArrayList) mapElement.getValue();
 									if (key.equalsIgnoreCase(filterfield)) {
+										Integer flag = 0;
 										for (String eachValue : value) {
 											if (eachValue.equalsIgnoreCase(filtervalue)) {
-												setrowSet(dataMap);
+												flag = 1;
 												break;
 											}
+										}
+										if (flag == 0) {
+											setrowSet(dataMap);
 										}
 									}
 								}
@@ -199,13 +204,17 @@ public class SIPTOCSVSubColSubRowWithFilter {
 									String key = (String) mapElement.getKey();
 									ArrayList<String> value = (ArrayList) mapElement.getValue();
 									if (key.equalsIgnoreCase(filterfield)) {
+										Integer flag = 0;
 										for (String field_value : value) {
 											for (String arr_val : arr_filterValue) {
 												if (arr_val.equalsIgnoreCase(field_value)) {
-													setrowSet(dataMap);
+													flag = 1;
 													break;
 												}
 											}
+										}
+										if (flag == 0) {
+											setrowSet(dataMap);
 										}
 									}
 								}
@@ -304,7 +313,7 @@ public class SIPTOCSVSubColSubRowWithFilter {
 	void multiplexmltocsv(String outputpath, int count) {
 		String pathName = outputpath;
 		String csvName = outputpath + count + ".csv";
-		System.out.println("CSV Name : " + csvName);
+		System.out.println("CSV File : " + csvName);
 		File csvFile = new File(csvName);
 
 		String[] header = new String[nodeindexMap.size()];
@@ -430,4 +439,5 @@ public class SIPTOCSVSubColSubRowWithFilter {
 		row[0] = valueMap.get("handleId").get(0);
 		rowSet.add(row);
 	}
+
 }

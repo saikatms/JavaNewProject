@@ -65,7 +65,6 @@ public class SIPToCSVSubColumnWithFilter {
 		filterfield = filterField;
 		filtertype = filterType;
 		filtervalue = filterValue;
-		System.out.println(columnOrHandlePath);
 		if (!(columnPath.contains("column") || handlePath.contains("handle"))) {
 			throw new Exception(
 					"Please Rename Input filename... For Column list input must include 'column' in it name and for Handle list input please include 'handle' in it.");
@@ -88,7 +87,7 @@ public class SIPToCSVSubColumnWithFilter {
 		}
 		traverse(sourceFile);
 		long end = System.currentTimeMillis();
-		System.out.println("Finished in " + (end - start) / (1000 * 60) + "m");
+		System.out.println("Finished in " + (end - start) / (1000 * 60) + "minutes");
 	}
 
 	void traverse(File sourceFile) throws IOException {
@@ -100,7 +99,7 @@ public class SIPToCSVSubColumnWithFilter {
 			if (isContain(filtertype, "value")) {
 				// Choose Column for all id
 				if (!headerList.isEmpty() && handleIDList.isEmpty()) {
-					System.out.println("Choose Column Operation Started... Please Wait");
+					System.out.println("Program Started...");
 					// Iteration of tar.gz file operation done here
 					while ((item = reader.next()) != null) {
 						String filenameString = new String(item.getEntryName());
@@ -250,7 +249,7 @@ public class SIPToCSVSubColumnWithFilter {
 					arr_filterValue.add(arr_val);
 				}
 				if (!headerList.isEmpty() && handleIDList.isEmpty()) {
-					System.out.println("Choose Column Operation Started... Please Wait");
+					System.out.println("Program Started...");
 					// Iteration of tar.gz file operation done here
 					while ((item = reader.next()) != null) {
 						String filenameString = new String(item.getEntryName());
@@ -435,7 +434,7 @@ public class SIPToCSVSubColumnWithFilter {
 		// TODO Auto-generated method stub
 		String pathName = outputpath;
 		String csvName = outputpath + rowcount + ".csv";
-		System.out.println("path name" + csvName);
+		System.out.println("CSV File : " + csvName);
 		File csvFile = new File(csvName);
 
 		String[] header;
@@ -484,7 +483,7 @@ public class SIPToCSVSubColumnWithFilter {
 	private void multiplexmltocsv(String outputpath, int count) {
 		String pathName = outputpath;
 		String csvName = outputpath + count + ".csv";
-		System.out.println("path name" + csvName);
+		System.out.println("CSV File : " + csvName);
 		File csvFile = new File(csvName);
 
 		String[] header = new String[nodeindexMap.size()];
@@ -502,7 +501,6 @@ public class SIPToCSVSubColumnWithFilter {
 			} else {
 				CSVPrinter csvPrinter = new CSVPrinter(fW, CSVFormat.DEFAULT.withHeader(header));
 				for (String[] onerow : rowSet) {
-					System.out.println("one row :" + onerow);
 					csvPrinter.printRecord(Arrays.asList(onerow));
 				}
 				csvPrinter.close();

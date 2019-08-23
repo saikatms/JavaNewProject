@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -28,8 +27,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-public class SIP2CSVAllColumnAllRowWithFilter {
-
+public class SIPToCSVFilterInverse {
 	static int count;
 	static int counter = 1;
 	private static Map<String, Integer> nodeindexmap = new HashMap<String, Integer>();
@@ -44,14 +42,14 @@ public class SIP2CSVAllColumnAllRowWithFilter {
 	public static String filtertype = "";
 	public static String filtervalue = "";
 
-	public SIP2CSVAllColumnAllRowWithFilter(String sourcePath, String destPath, Integer threshold, String filterField,
+	public SIPToCSVFilterInverse(String sourcePath, String destPath, Integer thresholdvalue, String filterField,
 			String filterType, String filterValue) throws Exception {
 		// TODO Auto-generated constructor stub
 		System.out.println("Program started ...");
 		long startTime = System.nanoTime();
 		File source = new File(sourcePath);
 		outputPath = destPath;
-		threSholdValue = threshold;
+		threSholdValue = thresholdvalue;
 		filterfield = filterField;
 		filtertype = filterType;
 		filtervalue = filterValue;
@@ -94,11 +92,15 @@ public class SIP2CSVAllColumnAllRowWithFilter {
 								String key = (String) mapElement.getKey();
 								ArrayList<String> value = (ArrayList) mapElement.getValue();
 								if (key.equalsIgnoreCase(filterfield)) {
+									Integer flag = 0;
 									for (String eachValue : value) {
 										if (eachValue.equalsIgnoreCase(filtervalue)) {
-											setrowSet(dataMap);
+											flag = 1;
 											break;
 										}
+									}
+									if (flag == 0) {
+										setrowSet(dataMap);
 									}
 								}
 							}
@@ -121,11 +123,15 @@ public class SIP2CSVAllColumnAllRowWithFilter {
 						String key = (String) mapElement.getKey();
 						ArrayList<String> value = (ArrayList) mapElement.getValue();
 						if (key.equalsIgnoreCase(filterfield)) {
+							Integer flag = 0;
 							for (String eachValue : value) {
 								if (eachValue.equalsIgnoreCase(filtervalue)) {
-									setrowSet(dataMap);
+									flag = 1;
 									break;
 								}
+							}
+							if (flag == 0) {
+								setrowSet(dataMap);
 							}
 						}
 					}
@@ -152,21 +158,23 @@ public class SIP2CSVAllColumnAllRowWithFilter {
 					if (!p.equals(parentString)) {
 						p = parentString;
 						System.out.println("Accessing File : " + count++ + " : " + parentString);
-
 						if (!dataMap.isEmpty()) {
 							for (Map.Entry mapElement : dataMap.entrySet()) {
 								String key = (String) mapElement.getKey();
 								ArrayList<String> value = (ArrayList) mapElement.getValue();
 								if (key.equalsIgnoreCase(filterfield)) {
+									Integer flag = 0;
 									for (String field_value : value) {
 										for (String arr_val : arr_filterValue) {
 											if (arr_val.equalsIgnoreCase(field_value)) {
-												setrowSet(dataMap);
+												flag = 1;
 												break;
 											}
 										}
 									}
-
+									if (flag == 0) {
+										setrowSet(dataMap);
+									}
 								}
 							}
 						}
@@ -188,13 +196,17 @@ public class SIP2CSVAllColumnAllRowWithFilter {
 						String key = (String) mapElement.getKey();
 						ArrayList<String> value = (ArrayList) mapElement.getValue();
 						if (key.equalsIgnoreCase(filterfield)) {
+							Integer flag = 0;
 							for (String field_value : value) {
 								for (String arr_val : arr_filterValue) {
 									if (arr_val.equalsIgnoreCase(field_value)) {
-										setrowSet(dataMap);
+										flag = 1;
 										break;
 									}
 								}
+							}
+							if (flag == 0) {
+								setrowSet(dataMap);
 							}
 						}
 					}
